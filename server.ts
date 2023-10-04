@@ -1,6 +1,7 @@
 import { createServer } from 'http'
 import { parse } from 'url'
 import next from 'next'
+import { ppid } from 'process'
 
 const port = parseInt(process.env.PORT || '3000', 10)
 const dev = process.env.NODE_ENV !== 'production'
@@ -16,15 +17,23 @@ app.prepare().then(() => {
       console.log({ pathname, query });
     }
 
+    let resolvedPath: string | undefined;
+
     if (pathname === '/') {
-      console.log('rendering', '/index');
-      return app.render(req, res, '/index', query);
-    } else if (pathname === '/a/') {
-      console.log('rendering', '/a/');
-      return app.render(req, res, '/a/', query);
-    } else if (pathname === '/b/') {
-      console.log('rendering', '/b/');
-      return app.render(req, res, '/b/', query);
+      resolvedPath = '/index';
+    } else if (/^\/a\/?$/.test(pathname)) {
+      resolvedPath = '/a';
+    } else if (/^\/b\/?$/.test(pathname)) {
+      resolvedPath = '/b';
+    }
+
+    if (resolvedPath) {
+      if (query.trailingSlash === 'true') {
+        resolvedPath += '/';
+      }
+
+      console.log('rendering', resolvedPath);
+      return app.render(req, res, resolvedPath, query);
     }
 
     handle(req, res, parsedUrl);
