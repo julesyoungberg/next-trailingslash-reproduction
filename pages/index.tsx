@@ -4,12 +4,12 @@ export default function Home() {
   return (
     <ul>
       <li>
-        <Link href="/a" as="/a">
+        <Link href="/a" as="/a/">
           a
         </Link>
       </li>
       <li>
-        <Link href="/b" as="/b">
+        <Link href="/b" as="/b/">
           b
         </Link>
       </li>

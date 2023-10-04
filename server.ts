@@ -9,8 +9,25 @@ const handle = app.getRequestHandler()
 
 app.prepare().then(() => {
   createServer((req, res) => {
-    const parsedUrl = parse(req.url!, true)
-    handle(req, res, parsedUrl)
+    const parsedUrl = parse(req.url, true);
+    const { pathname, query } = parsedUrl;
+
+    if (!pathname.startsWith('/_next')) {
+      console.log({ pathname, query });
+    }
+
+    if (pathname === '/') {
+      console.log('rendering', '/index');
+      return app.render(req, res, '/index', query);
+    } else if (pathname === '/a/') {
+      console.log('rendering', '/a/');
+      return app.render(req, res, '/a/', query);
+    } else if (pathname === '/b/') {
+      console.log('rendering', '/b/');
+      return app.render(req, res, '/b/', query);
+    }
+
+    handle(req, res, parsedUrl);
   }).listen(port)
 
   console.log(
